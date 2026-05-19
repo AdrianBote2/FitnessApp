@@ -1,0 +1,11 @@
+{
+  "permissions": {
+    "allow": [
+      "Skill(anthropic-skills:docx)",
+      "Skill(anthropic-skills:docx:*)",
+      "PowerShell(extract-text \"C:\\\\Users\\\\AB\\\\Downloads\\\\Nucleus_Project_Handout.docx\")",
+      "Read(//c/Users/AB/Downloads/**)",
+      "Bash(python -c ' *)"
+    ]
+  }
+}
