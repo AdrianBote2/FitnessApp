@@ -8,6 +8,7 @@ import Progress from './pages/Progress'
 import Research from './pages/Research'
 import Navbar from './components/Navbar'
 import LegalDisclaimer from './components/LegalDisclaimer'
+import Footer from './components/Footer'
 
 function App() {
   const [darkMode, setDarkMode] = useState(() => {
@@ -44,6 +45,7 @@ function App() {
           </Routes>
         </div>
       </main>
+      <Footer />
     </BrowserRouter>
   )
 }
