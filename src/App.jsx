@@ -9,18 +9,36 @@ import Research from './pages/Research'
 import Navbar from './components/Navbar'
 import LegalDisclaimer from './components/LegalDisclaimer'
 import Footer from './components/Footer'
+import Login from './pages/Login'
+import { supabase } from './services/supabase'
 
 function App() {
+  const [session, setSession] = useState(null)
+
   const [darkMode, setDarkMode] = useState(() => {
     const saved = localStorage.getItem('theme')
     return saved ? saved === 'dark' : true
   })
 
   useEffect(() => {
+    supabase.auth.getSession().then(({ data: { session } }) => {
+      setSession(session)
+    })
+
+    const { data: { subscription } } = supabase.auth.onAuthStateChange((_event, session) => {
+      setSession(session)
+    })
+
+    return () => subscription.unsubscribe()
+  }, [])
+
+  useEffect(() => {
     document.body.classList.toggle('dark', darkMode)
     document.body.classList.toggle('light', !darkMode)
     localStorage.setItem('theme', darkMode ? 'dark' : 'light')
   }, [darkMode])
+
+  if (!session) return <Login />
 
   return (
     <BrowserRouter>
