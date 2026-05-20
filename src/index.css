@@ -27,3 +27,48 @@ body.dark {
   background-color: var(--color-dark-bg);
   color: var(--color-text-primary);
 }
+
+body.light {
+  background-color: var(--color-light-bg);
+  color: var(--color-light-text);
+}
+
+body.light .bg-dark-bg\/80 {
+  background-color: rgb(248 250 252 / 0.8);
+}
+
+body.light .bg-dark-surface {
+  background-color: var(--color-light-surface);
+}
+
+body.light .bg-dark-card {
+  background-color: var(--color-light-card);
+}
+
+body.light .border-white\/10 {
+  border-color: rgb(15 23 42 / 0.1);
+}
+
+body.light .text-text-primary {
+  color: var(--color-light-text);
+}
+
+body.light .bg-white\/5 {
+  background-color: rgb(15 23 42 / 0.05);
+}
+
+body.light .hover\:bg-white\/10:hover {
+  background-color: rgb(15 23 42 / 0.05);
+}
+
+body.light .hover\:text-text-primary:hover {
+  color: var(--color-light-text);
+}
+
+body.light .text-white\/20 {
+  color: rgb(15 23 42 / 0.2);
+}
+
+body.light .border-white\/5 {
+  border-color: rgb(15 23 42 / 0.05);
+}

@@ -24,7 +24,7 @@ function Navbar() {
             key={link.to}
             to={link.to}
             className={({ isActive }) =>
-              `flex-1 flex items-center justify-center py-3 text-xs transition-colors duration-150
+              `cursor-pointer flex-1 flex items-center justify-center py-3 text-xs transition-colors duration-150
                md:flex-none md:justify-start md:px-6 md:py-3 md:text-sm
                ${isActive
                  ? 'text-accent bg-accent/10'
