@@ -1,11 +1,12 @@
 import { NavLink } from 'react-router-dom'
+import { HiHome, HiClipboardList, HiLightBulb, HiChartBar, HiSearch } from 'react-icons/hi'
 
 const links = [
-  { to: '/', label: 'Dashboard' },
-  { to: '/log', label: 'Log' },
-  { to: '/insights', label: 'Insights' },
-  { to: '/progress', label: 'Progress' },
-  { to: '/research', label: 'Research' },
+  { to: '/', label: 'Dashboard', icon: HiHome },
+  { to: '/log', label: 'Log', icon: HiClipboardList },
+  { to: '/insights', label: 'Insights', icon: HiLightBulb },
+  { to: '/progress', label: 'Progress', icon: HiChartBar },
+  { to: '/research', label: 'Research', icon: HiSearch },
 ]
 
 function Navbar() {
@@ -32,7 +33,8 @@ function Navbar() {
                }`
             }
           >
-            {link.label}
+            <link.icon className="text-lg md:mr-3" />
+            <span className="hidden md:inline">{link.label}</span>
           </NavLink>
         ))}
       </div>
