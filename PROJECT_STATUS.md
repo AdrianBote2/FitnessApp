@@ -112,11 +112,11 @@ package.json         — All dependencies
 ## What Still Needs to Be Done
 
 ### Phase 1 — Remaining (Boilerplate)
-- [ ] Legal disclaimer modal (first visit, stored in localStorage)
-- [ ] Persistent footer on every page (medical disclaimer text)
-- [ ] Service placeholder files: `src/services/supabase.js`, `src/services/claudeApi.js`, `src/services/pubmedApi.js`
-- [ ] Add icons to Navbar links (react-icons)
-- [ ] Initial git commit
+- [x] Legal disclaimer modal (first visit, stored in localStorage)
+- [x] Persistent footer on every page (medical disclaimer text)
+- [x] Service placeholder files: `src/services/supabase.js`, `src/services/claudeApi.js`, `src/services/pubmedApi.js`
+- [x] Add icons to Navbar links (react-icons)
+- [x] Initial git commit
 
 ### Phase 2 — Supabase Auth & Database
 - [ ] Create Supabase project
