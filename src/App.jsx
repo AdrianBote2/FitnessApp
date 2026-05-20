@@ -7,6 +7,7 @@ import Log from './pages/Log'
 import Progress from './pages/Progress'
 import Research from './pages/Research'
 import Navbar from './components/Navbar'
+import LegalDisclaimer from './components/LegalDisclaimer'
 
 function App() {
   const [darkMode, setDarkMode] = useState(() => {
@@ -22,6 +23,7 @@ function App() {
 
   return (
     <BrowserRouter>
+      <LegalDisclaimer />
       <Navbar />
       <main className="pb-16 md:pb-0 md:pl-60">
         <div className="fixed top-0 right-0 left-0 md:left-60 z-40 flex items-center justify-end px-4 py-3 md:px-8 bg-dark-bg/80 backdrop-blur-sm">
