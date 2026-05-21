@@ -1,5 +1,15 @@
 import { useState } from 'react'
+import { motion } from 'framer-motion'
 import { supabase } from '../services/supabase'
+
+const container = {
+  hidden: {},
+  show: { transition: { staggerChildren: 0.1 } },
+}
+const item = {
+  hidden: { opacity: 0, y: 20 },
+  show: { opacity: 1, y: 0, transition: { duration: 0.4, ease: 'easeOut' } },
+}
 
 function Log() {
   //Workout inputs
@@ -86,14 +96,14 @@ function Log() {
 
   return (
     <div>
-      <div className="mb-6">
+      <motion.div initial={{ opacity: 0, y: -10 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.4 }} className="mb-6">
         <h1 className="font-heading text-2xl font-bold">Daily Log</h1>
         <p className="text-text-muted text-sm mt-1">Log your workout, nutrition, and recovery</p>
-      </div>
+      </motion.div>
 
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+      <motion.div variants={container} initial="hidden" animate="show" className="grid grid-cols-1 lg:grid-cols-3 gap-6">
         {/* -- Workout Card -- */}
-        <div className="bg-dark-card rounded-xl p-6">
+        <motion.div variants={item} className="bg-dark-card rounded-xl p-6">
           <h2 className="font-heading text-lg font-semibold mb-4">Workout</h2>
           <div className="space-y-3">
             <div>
@@ -139,10 +149,10 @@ function Log() {
               </div>
             </div>
           </div>
-        </div>
+        </motion.div>
 
         {/* -- Nutrition Card -- */}
-        <div className="bg-dark-card rounded-xl p-6">
+        <motion.div variants={item} className="bg-dark-card rounded-xl p-6">
           <h2 className="font-heading text-lg font-semibold mb-4">Nutrition</h2>
           <div className="space-y-3">
             <div>
@@ -176,10 +186,10 @@ function Log() {
               />
             </div>
           </div>
-        </div>
+        </motion.div>
 
         {/* -- Recovery Card -- */}
-        <div className="bg-dark-card rounded-xl p-6">
+        <motion.div variants={item} className="bg-dark-card rounded-xl p-6">
           <h2 className="font-heading text-lg font-semibold mb-4">Recovery</h2>
           <div className="space-y-3">
             <div>
@@ -218,8 +228,8 @@ function Log() {
               />
             </div>
           </div>
-        </div>
-      </div>
+        </motion.div>
+      </motion.div>
 
       {/* -- Success/error message shown after save -- */}
       {message && (

@@ -1,4 +1,14 @@
 import { useState } from 'react'
+import { motion } from 'framer-motion'
+
+const container = {
+  hidden: {},
+  show: { transition: { staggerChildren: 0.08 } },
+}
+const item = {
+  hidden: { opacity: 0, y: 20 },
+  show: { opacity: 1, y: 0, transition: { duration: 0.4, ease: 'easeOut' } },
+}
 
 // topic badge colors
 const topicColors = {
@@ -87,10 +97,10 @@ function Research() {
 
   return (
     <div>
-      <div className="mb-6">
+      <motion.div initial={{ opacity: 0, y: -10 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.4 }} className="mb-6">
         <h1 className="font-heading text-2xl font-bold">Research</h1>
         <p className="text-text-muted text-sm mt-1">Peer-reviewed studies from PubMed</p>
-      </div>
+      </motion.div>
 
       {/* search bar */}
       <form onSubmit={handleSearch} className="mb-4">
@@ -129,10 +139,11 @@ function Research() {
 
       {/* results */}
       {studies.length > 0 ? (
-        <div className="space-y-4">
+        <motion.div variants={container} initial="hidden" animate="show" className="space-y-4">
           {studies.map((study) => (
-            <a
+            <motion.a
               key={study.id}
+              variants={item}
               href={study.link}
               target="_blank"
               rel="noopener noreferrer"
@@ -151,9 +162,9 @@ function Research() {
                 <span className="text-white/20">|</span>
                 <span>{study.year}</span>
               </div>
-            </a>
+            </motion.a>
           ))}
-        </div>
+        </motion.div>
       ) : !loading && (
         <div className="bg-dark-card rounded-xl p-10 text-center">
           <p className="text-text-muted">Search for a topic or click a quick topic above to find studies.</p>

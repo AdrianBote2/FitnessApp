@@ -1,13 +1,24 @@
 import { useState, useEffect } from 'react'
+import { motion } from 'framer-motion'
 import { supabase } from '../services/supabase'
 import {
   LineChart, Line, BarChart, Bar,
   XAxis, YAxis, Tooltip, ResponsiveContainer, CartesianGrid
 } from 'recharts'
 
+const container = {
+  hidden: {},
+  show: { transition: { staggerChildren: 0.1 } },
+}
+const item = {
+  hidden: { opacity: 0, y: 20 },
+  show: { opacity: 1, y: 0, transition: { duration: 0.4, ease: 'easeOut' } },
+}
+
 function Progress() {
   const [logs, setLogs] = useState([])
   const [workouts, setWorkouts] = useState([])
+  const [loading, setLoading] = useState(true)
 
   // pull last 14 days of logs + workouts
   useEffect(() => {
@@ -15,6 +26,7 @@ function Progress() {
   }, [])
 
   const fetchProgressData = async () => {
+    setLoading(true)
     const { data: { user } } = await supabase.auth.getUser()
     if (!user) return
 
@@ -63,6 +75,8 @@ function Progress() {
       }))
       setWorkouts(volumeArray)
     }
+
+    setLoading(false)
   }
 
   // no data state
@@ -70,19 +84,23 @@ function Progress() {
 
   return (
     <div>
-      <div className="mb-6">
+      <motion.div initial={{ opacity: 0, y: -10 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.4 }} className="mb-6">
         <h1 className="font-heading text-2xl font-bold">Progress</h1>
         <p className="text-text-muted text-sm mt-1">Track your trends over the last 14 days</p>
-      </div>
+      </motion.div>
 
-      {noData ? (
+      {loading ? (
+        <div className="bg-dark-card rounded-xl p-10 text-center">
+          <p className="text-text-muted">Loading your progress...</p>
+        </div>
+      ) : noData ? (
         <div className="bg-dark-card rounded-xl p-10 text-center">
           <p className="text-text-muted">No data yet. Log some entries to see your progress!</p>
         </div>
       ) : (
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+        <motion.div variants={container} initial="hidden" animate="show" className="grid grid-cols-1 md:grid-cols-2 gap-4">
           {/* calories — line chart */}
-          <div className="bg-dark-card rounded-xl p-5">
+          <motion.div variants={item} className="bg-dark-card rounded-xl p-5">
             <p className="text-text-muted text-xs uppercase tracking-wide mb-4">Calorie Intake</p>
             <ResponsiveContainer width="100%" height={160}>
               <LineChart data={logs}>
@@ -93,10 +111,10 @@ function Progress() {
                 <Line type="monotone" dataKey="calories" stroke="#3B82F6" strokeWidth={2} dot={false} />
               </LineChart>
             </ResponsiveContainer>
-          </div>
+          </motion.div>
 
           {/* protein — line chart */}
-          <div className="bg-dark-card rounded-xl p-5">
+          <motion.div variants={item} className="bg-dark-card rounded-xl p-5">
             <p className="text-text-muted text-xs uppercase tracking-wide mb-4">Protein Intake</p>
             <ResponsiveContainer width="100%" height={160}>
               <LineChart data={logs}>
@@ -107,10 +125,10 @@ function Progress() {
                 <Line type="monotone" dataKey="protein" stroke="#10B981" strokeWidth={2} dot={false} />
               </LineChart>
             </ResponsiveContainer>
-          </div>
+          </motion.div>
 
           {/* sleep — bar chart */}
-          <div className="bg-dark-card rounded-xl p-5">
+          <motion.div variants={item} className="bg-dark-card rounded-xl p-5">
             <p className="text-text-muted text-xs uppercase tracking-wide mb-4">Sleep Hours</p>
             <ResponsiveContainer width="100%" height={160}>
               <BarChart data={logs}>
@@ -121,10 +139,10 @@ function Progress() {
                 <Bar dataKey="sleep_hours" fill="#8B5CF6" radius={[4, 4, 0, 0]} />
               </BarChart>
             </ResponsiveContainer>
-          </div>
+          </motion.div>
 
           {/* energy — line chart */}
-          <div className="bg-dark-card rounded-xl p-5">
+          <motion.div variants={item} className="bg-dark-card rounded-xl p-5">
             <p className="text-text-muted text-xs uppercase tracking-wide mb-4">Energy Level</p>
             <ResponsiveContainer width="100%" height={160}>
               <LineChart data={logs}>
@@ -135,10 +153,10 @@ function Progress() {
                 <Line type="monotone" dataKey="energy_level" stroke="#F59E0B" strokeWidth={2} dot={false} />
               </LineChart>
             </ResponsiveContainer>
-          </div>
+          </motion.div>
 
           {/* workout volume — bar chart, full width */}
-          <div className="bg-dark-card rounded-xl p-5 md:col-span-2">
+          <motion.div variants={item} className="bg-dark-card rounded-xl p-5 md:col-span-2">
             <p className="text-text-muted text-xs uppercase tracking-wide mb-4">Workout Volume</p>
             {workouts.length > 0 ? (
               <ResponsiveContainer width="100%" height={160}>
@@ -153,8 +171,8 @@ function Progress() {
             ) : (
               <p className="text-text-muted text-sm text-center py-8">No workouts logged yet</p>
             )}
-          </div>
-        </div>
+          </motion.div>
+        </motion.div>
       )}
     </div>
   )
