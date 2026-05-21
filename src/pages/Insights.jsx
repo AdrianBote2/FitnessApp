@@ -1,45 +1,99 @@
-const placeholderInsights = [
-  {
-    title: 'Sleep & Recovery Connection',
-    body: 'Your sleep averaged 7.2 hours this week, correlating with higher energy levels on days following 7+ hours. Research suggests this aligns with optimal recovery windows for muscle protein synthesis.',
-    study: 'Dattilo et al. (2011) — Sleep and muscle recovery, Medical Hypotheses',
-  },
-  {
-    title: 'Protein Timing Pattern',
-    body: 'You consistently hit your protein target of 140g+ on training days but dropped to 95g on rest days. Maintaining protein intake on rest days supports continued muscle repair and adaptation.',
-    study: 'Schoenfeld & Aragon (2018) — Protein timing revisited, Journal of ISSN',
-  },
-  {
-    title: 'Training Volume Trend',
-    body: 'Weekly training volume increased 12% compared to last week. Progressive overload is on track, but monitor recovery markers — your stress levels elevated slightly on high-volume days.',
-    study: 'Schoenfeld et al. (2017) — Dose-response of weekly volume, Medicine & Science in Sports',
-  },
-]
+import { useState } from 'react'
+import { supabase } from '../services/supabase'
 
 function Insights() {
+  const [insights, setInsights] = useState([])
+  const [loading, setLoading] = useState(false)
+  const [error, setError] = useState(null)
+
+  const generateInsights = async () => {
+    setLoading(true)
+    setError(null)
+
+    const { data: { user } } = await supabase.auth.getUser()
+    if (!user) return
+
+    // last 7 days
+    const weekAgo = new Date()
+    weekAgo.setDate(weekAgo.getDate() - 6)
+    const startDate = weekAgo.toISOString().split('T')[0]
+
+    // pull logs
+    const { data: logs } = await supabase
+      .from('daily_logs')
+      .select('log_date, calories, protein, meal_timing, sleep_hours, energy_level, stress_level')
+      .eq('user_id', user.id)
+      .gte('log_date', startDate)
+      .order('log_date')
+
+    // pull workouts
+    const { data: workouts } = await supabase
+      .from('workout_entries')
+      .select('exercise, type, sets, reps, weight, distance, duration, daily_logs!inner(log_date, user_id)')
+      .eq('daily_logs.user_id', user.id)
+      .gte('daily_logs.log_date', startDate)
+
+    if (!logs || logs.length === 0) {
+      setError('No data from the last 7 days. Log some entries first!')
+      setLoading(false)
+      return
+    }
+
+    try {
+      // call our serverless function (not OpenAI directly)
+      const response = await fetch('/api/insights', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ logs, workouts: workouts || [] }),
+      })
+
+      if (!response.ok) throw new Error('Failed to generate insights')
+
+      const data = await response.json()
+      setInsights(data.insights)
+    } catch (err) {
+      setError('Could not generate insights. Try again later.')
+    }
+
+    setLoading(false)
+  }
+
   return (
     <div>
       <div className="flex items-center justify-between mb-6">
         <div>
           <h1 className="font-heading text-2xl font-bold">AI Insights</h1>
-          <p className="text-text-muted text-sm mt-1">Weekly analysis powered by Claude</p>
+          <p className="text-text-muted text-sm mt-1">Weekly analysis powered by AI</p>
         </div>
-        <button className="bg-dark-card hover:bg-white/10 text-text-primary text-sm font-medium px-4 py-2 rounded-lg border border-white/10 transition-colors duration-150">
-          Regenerate
+        <button
+          onClick={generateInsights}
+          disabled={loading}
+          className="cursor-pointer bg-dark-card hover:bg-white/10 text-text-primary text-sm font-medium px-4 py-2 rounded-lg border border-white/10 transition-colors duration-150 disabled:opacity-50"
+        >
+          {loading ? 'Analyzing...' : insights.length > 0 ? 'Regenerate' : 'Generate Insights'}
         </button>
       </div>
 
-      <div className="space-y-4">
-        {placeholderInsights.map((insight) => (
-          <div key={insight.title} className="bg-dark-card rounded-xl p-6">
-            <h2 className="font-heading text-lg font-semibold mb-2">{insight.title}</h2>
-            <p className="text-text-muted text-sm leading-relaxed mb-4">{insight.body}</p>
-            <div className="border-t border-white/10 pt-3">
-              <p className="text-xs text-accent">{insight.study}</p>
+      {error && (
+        <div className="bg-red-500/10 border border-red-500/20 rounded-xl p-4 mb-4">
+          <p className="text-red-400 text-sm">{error}</p>
+        </div>
+      )}
+
+      {insights.length > 0 ? (
+        <div className="space-y-4">
+          {insights.map((insight, i) => (
+            <div key={i} className="bg-dark-card rounded-xl p-6">
+              <h2 className="font-heading text-lg font-semibold mb-2">{insight.title}</h2>
+              <p className="text-text-muted text-sm leading-relaxed">{insight.body}</p>
             </div>
-          </div>
-        ))}
-      </div>
+          ))}
+        </div>
+      ) : !loading && !error && (
+        <div className="bg-dark-card rounded-xl p-10 text-center">
+          <p className="text-text-muted">Click "Generate Insights" to analyze your last 7 days of data.</p>
+        </div>
+      )}
 
       <div className="mt-6 bg-dark-card rounded-xl p-6 border border-white/5">
         <p className="text-text-muted text-xs text-center">
