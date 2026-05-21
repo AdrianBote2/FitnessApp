@@ -1,5 +1,15 @@
 import { useState } from 'react'
+import { motion } from 'framer-motion'
 import { supabase } from '../services/supabase'
+
+const container = {
+  hidden: {},
+  show: { transition: { staggerChildren: 0.1 } },
+}
+const item = {
+  hidden: { opacity: 0, y: 20 },
+  show: { opacity: 1, y: 0, transition: { duration: 0.4, ease: 'easeOut' } },
+}
 
 function Insights() {
   const [insights, setInsights] = useState([])
@@ -60,7 +70,7 @@ function Insights() {
 
   return (
     <div>
-      <div className="flex items-center justify-between mb-6">
+      <motion.div initial={{ opacity: 0, y: -10 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.4 }} className="flex items-center justify-between mb-6">
         <div>
           <h1 className="font-heading text-2xl font-bold">AI Insights</h1>
           <p className="text-text-muted text-sm mt-1">Weekly analysis powered by AI</p>
@@ -72,7 +82,7 @@ function Insights() {
         >
           {loading ? 'Analyzing...' : insights.length > 0 ? 'Regenerate' : 'Generate Insights'}
         </button>
-      </div>
+      </motion.div>
 
       {error && (
         <div className="bg-red-500/10 border border-red-500/20 rounded-xl p-4 mb-4">
@@ -81,14 +91,14 @@ function Insights() {
       )}
 
       {insights.length > 0 ? (
-        <div className="space-y-4">
+        <motion.div variants={container} initial="hidden" animate="show" className="space-y-4">
           {insights.map((insight, i) => (
-            <div key={i} className="bg-dark-card rounded-xl p-6">
+            <motion.div key={i} variants={item} className="bg-dark-card rounded-xl p-6">
               <h2 className="font-heading text-lg font-semibold mb-2">{insight.title}</h2>
               <p className="text-text-muted text-sm leading-relaxed">{insight.body}</p>
-            </div>
+            </motion.div>
           ))}
-        </div>
+        </motion.div>
       ) : !loading && !error && (
         <div className="bg-dark-card rounded-xl p-10 text-center">
           <p className="text-text-muted">Click "Generate Insights" to analyze your last 7 days of data.</p>

@@ -67,10 +67,10 @@ function App() {
         </div>
         <div className="mx-auto max-w-[1200px] px-4 pt-16 pb-6 md:px-8">
           <Routes>
-            <Route path="/" element={<Dashboard />} />
-            <Route path="/insights" element={<Insights />} />
+            <Route path="/" element={<Dashboard session={session} />} />
             <Route path="/log" element={<Log />} />
             <Route path="/progress" element={<Progress />} />
+            <Route path="/insights" element={<Insights />} />
             <Route path="/research" element={<Research />} />
           </Routes>
         </div>

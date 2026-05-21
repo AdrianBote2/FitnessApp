@@ -4,8 +4,8 @@ import { HiHome, HiClipboardList, HiLightBulb, HiChartBar, HiSearch } from 'reac
 const links = [
   { to: '/', label: 'Dashboard', icon: HiHome },
   { to: '/log', label: 'Log', icon: HiClipboardList },
-  { to: '/insights', label: 'Insights', icon: HiLightBulb },
   { to: '/progress', label: 'Progress', icon: HiChartBar },
+  { to: '/insights', label: 'Insights', icon: HiLightBulb },
   { to: '/research', label: 'Research', icon: HiSearch },
 ]
 
